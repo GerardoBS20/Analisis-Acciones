@@ -35,7 +35,9 @@ def main():
         tickerDf = tickerData.history(start=fecha_usuario_str, end=fecha_actual_str)
         
         st.dataframe(tickerDf)
+
         info = tickerData.info
+
         # Dividend Yield
         dividend_yield = info.get("dividendYield", np.nan)
 
