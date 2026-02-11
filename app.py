@@ -4,8 +4,23 @@ import yfinance as yf
 import numpy as np
 from datetime import date
 
+def obtener_datos_ticker(ticker_symbol, start_date, end_date):
+    ticker = yf.Ticker(ticker_symbol)
+    
+    # Histórico
+    df = ticker.history(start=start_date, end=end_date)
+    
+    # Info (puede fallar por rate limit)
+    try:
+        info = ticker.fast_info  # mucho más ligero que .info
+        dividend_yield = info.get("dividendYield", np.nan)
+    except Exception:
+        dividend_yield = np.nan
+
+    return df, dividend_yield
+
 def main():
-    company_ticker = st.text_input("Ingrese el ticker de la empresa")
+    ticker_symbol = st.text_input("Ingrese el ticker de la empresa")
 
     fecha_usuario = st.date_input(
     label="Selecciona una fecha",
@@ -20,28 +35,19 @@ def main():
     fecha_actual = date.today()
     fecha_actual_str = fecha_actual.strftime("%Y-%m-%d")
 
-    st.write(company_ticker)
+    st.write(ticker_symbol)
 
     if st.sidebar.button("Predict", key="predict"):
         #define the ticker symbol
-        tickerSymbol = company_ticker
-        st.write("Wait 1 minute for the Results")
-        st.write("Making predictions...")
+        tickerDf, dividend_yield = obtener_datos_ticker(
+        ticker_symbol,
+        fecha_usuario_str,
+        fecha_actual_str
+        )
 
-        #get data on this ticker
-        tickerData = yf.Ticker(tickerSymbol)
-
-        #get the historical prices for this ticker
-        tickerDf = tickerData.history(start=fecha_usuario_str, end=fecha_actual_str)
-        
         st.dataframe(tickerDf)
-
-        info = tickerData.info
-
-        # Dividend Yield
-        dividend_yield = info.get("dividendYield", np.nan)
-
-        st.write(dividend_yield)
+        st.write("Dividend Yield:", dividend_yield)
+        
 
 if __name__ == '__main__':
     main()
