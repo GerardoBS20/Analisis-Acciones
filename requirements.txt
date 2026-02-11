@@ -1,0 +1,7 @@
+setuptools
+wheel
+pandas
+yfinance
+streamlit
+prophet
+datetime
