@@ -14,10 +14,17 @@ def obtener_datos_ticker(ticker_symbol, start_date, end_date):
     try:
         info = ticker.fast_info  # mucho más ligero que .info
         dividend_yield = info.get("dividendYield", np.nan)
+        # Payout Ratio (EPS-based)
+        payout_ratio = info.get("payoutRatio", np.nan)
+        # Debt to Equity
+        debt_to_equity = info.get("debtToEquity", np.nan) / 100 if info.get("debtToEquity") else np.nan
     except Exception:
-        dividend_yield = np.nan
+        dividend_yield = np.nan,
+        payout_ratio = np.nan
+        debt_to_equity = np.nan
 
-    return df, dividend_yield
+    return df, dividend_yield,payout_ratio,debt_to_equity
+
 
 def main():
     ticker_symbol = st.text_input("Ingrese el ticker de la empresa")
@@ -39,7 +46,7 @@ def main():
 
     if st.sidebar.button("Predict", key="predict"):
         #define the ticker symbol
-        tickerDf, dividend_yield = obtener_datos_ticker(
+        tickerDf, dividend_yield ,payout_ratio,debt_to_equity = obtener_datos_ticker(
         ticker_symbol,
         fecha_usuario_str,
         fecha_actual_str
@@ -47,6 +54,8 @@ def main():
 
         st.dataframe(tickerDf)
         st.write("Dividend Yield:", dividend_yield)
+        st.write("payout_ratio:", payout_ratio)
+        st.write("debt_to_equity :", debt_to_equity)
         
 
 if __name__ == '__main__':
