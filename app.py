@@ -30,10 +30,9 @@ def main():
 
         #get data on this ticker
         tickerData = yf.Ticker(tickerSymbol)
-        start = fecha_usuario_str
-        end = fecha_actual_str
+
         #get the historical prices for this ticker
-        tickerDf = tickerData.history(start, end)
+        tickerDf = tickerData.history(start=fecha_usuario_str, end=fecha_actual_str)
         
         st.dataframe(tickerDf)
         info = tickerData.info
