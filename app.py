@@ -4,6 +4,7 @@ import yfinance as yf
 import numpy as np
 from datetime import date
 
+@st.cache_data(ttl=3600)
 def obtener_datos_ticker(ticker_symbol, start_date, end_date):
     ticker = yf.Ticker(ticker_symbol)
     
@@ -13,7 +14,9 @@ def obtener_datos_ticker(ticker_symbol, start_date, end_date):
     # Info (puede fallar por rate limit)
     try:
         info = ticker.fast_info  # mucho más ligero que .info
-        dividend_yield = info.get("dividendYield", np.nan)
+        #dividend_yield = info.get("dividendYield", np.nan)
+        dividend_yield = ticker.dividends
+
         # Payout Ratio (EPS-based)
         payout_ratio = info.get("payoutRatio", np.nan)
         # Debt to Equity
