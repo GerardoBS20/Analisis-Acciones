@@ -1,4 +1,4 @@
-import pandas as pd
+#import pandas as pd
 import streamlit as st
 import yfinance as yf
 import numpy as np
@@ -34,9 +34,13 @@ def main():
         end = fecha_actual_str
         #get the historical prices for this ticker
         tickerDf = tickerData.history(start, end)
+        
+        st.dataframe(tickerDf)
         info = tickerData.info
         # Dividend Yield
         dividend_yield = info.get("dividendYield", np.nan)
+
+        st.write(dividend_yield)
 
 if __name__ == '__main__':
     main()
