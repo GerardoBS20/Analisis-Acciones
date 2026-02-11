@@ -15,7 +15,11 @@ def obtener_datos_ticker(ticker_symbol, start_date, end_date):
     try:
         info = ticker.fast_info  # mucho más ligero que .info
         #dividend_yield = info.get("dividendYield", np.nan)
-        dividend_yield = ticker.dividends
+        dividends = ticker.dividends
+        ultimo_dividendo = dividends.iloc[-1]
+        precio = ticker.history(period="1d")["Close"].iloc[-1]
+
+        dividend_yield = ultimo_dividendo / precio
 
         # Payout Ratio (EPS-based)
         payout_ratio = info.get("payoutRatio", np.nan)
